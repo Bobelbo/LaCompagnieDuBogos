@@ -32,6 +32,7 @@ export class ReinforcementUtils {
 
         enemies.forEach((e: ReinforcementRoi) => {
             while (money-e.price >= 0) {
+                money -= e.price;
                 this.actions.push(new SendReinforcementCommand(e.type, enemyTeams[0]));
             }
         })

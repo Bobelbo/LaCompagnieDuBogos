@@ -46,7 +46,8 @@ export class Bot {
 
     getPayoutActions() {
         const cmd = [];
-        if (this.state.ticksUntilPayout !== 60) return cmd;
+        console.log(this.state.ticksUntilPayout);
+        if (this.state.ticksUntilPayout !== 59) return cmd;
 
         this.getTowerCommand().forEach((x) => cmd.push(x))
         this.getReinforcementCommand().forEach((x) => cmd.push(x))
@@ -61,11 +62,10 @@ export class Bot {
 
     getTowerCommand() {
         const cmd = [];
-
         let moneySpending = 0;
 
         if (this.state.round <= 3){
-            moneySpending = 250;
+            moneySpending = 0;
         }
         else if (this.state.round <= 7) {
             moneySpending = 400;
