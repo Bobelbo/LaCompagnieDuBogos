@@ -25,14 +25,14 @@ export class ReinforcementUtils {
     }
 
     getReinforcementAction(money: number): CommandAction[] {
-        let enemies: ReinforcementRoi[] = this.getBestReinforcement()
+        const enemies: ReinforcementRoi[] = this.getBestReinforcement()
         const gameHelper = new GameHelpers(this.state);
         const { enemyTeams } = gameHelper;
         this.actions = [];
 
         enemies.reverse().forEach((e: ReinforcementRoi) => {
             while (money-e.price >= 0) {
-                this.actions.push(new SendReinforcementCommand(e.type, this.state.teamInfos[0].id));
+                this.actions.push(new SendReinforcementCommand(e.type, enemyTeams[0]));
             }
         })
 
@@ -40,7 +40,7 @@ export class ReinforcementUtils {
     }
 
     private getBestReinforcement(): ReinforcementRoi[] {
-        let roiArr: ReinforcementRoi[] = [];
+        const roiArr: ReinforcementRoi[] = [];
 
         Object.keys(this.state.shop.reinforcements).forEach(
             (type: string) => {
@@ -55,6 +55,17 @@ export class ReinforcementUtils {
 
         return roiArr.sort((a, b) => a.roi - b.roi);
     }
+
+    // private getMinHpEnemyTeamId(): string {
+    //     let minHp:string
+    //      for(let i=0;i<3;i++){
+    //         let theTeamId:Id = new GameHelpers(this.state).enemyTeams[i]
+    //           if(i==0){minHp=theTeamId}
+    //         if(this.state.teamInfos[theTeamId].isAlive){
+    //               if() 
+    //         }
+    //     }
+    // }
 }
 
 // let enemies: EnemyType[] = this.getBestReinforcement()

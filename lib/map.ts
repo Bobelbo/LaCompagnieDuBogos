@@ -13,31 +13,47 @@ class ValuedPositions implements IValuedPositions {
     constructor(pos: Position, val: number, data?: any) {
         this.position = pos;
         this.value = val;
+        this.data = data;
     }
 }
 
 export class MapUtils {
     private map: GameMap;
+    public spearPositionArr: IValuedPositions[];
+    public bombPositionArr: IValuedPositions[];
+    public fuguPositionArr: IValuedPositions[];
 
     constructor(map: GameMap) {
         this.map = map;
+        this.setupArrays()
+        this.bombPositionArr = [...this.spearPositionArr]
     }
 
-    public getPositionArray(): IValuedPositions[] {
-        let posArr: IValuedPositions[] = [];
+    private setupArrays(): void {
+        this.spearPositionArr = []
+        this.fuguPositionArr = []
 
         // Create array
-        for (let x: number = 0; x < this.map.width; x++) {
-            for (let y: number = 0; y < this.map.height; y++) {
-                let pos = { x: x, y: y };
+        for (let x = 0; x < this.map.width; x++) {
+            for (let y = 0; y < this.map.height; y++) {
+                const pos = { x: x, y: y };
                 if (!this.isObstacle(pos)) {
-                    posArr.push(new ValuedPositions(pos, this.getValue(pos), this.isObstacle(pos)));
+                    const fuguValue = this.getValue(pos, 1);
+                    if (fuguValue > 3) {
+                        this.fuguPositionArr.push(new ValuedPositions(pos, fuguValue, this.isObstacle(pos)));
+                    } else {
+                        const spearValue = this.getValue(pos, 2);
+                        if (spearValue > 2) {
+                            this.spearPositionArr.push(new ValuedPositions(pos, spearValue, this.isObstacle(pos)));
+                        }
+                    }
                 }
             }
         }
 
         // Filter bad decisions
-        return posArr.filter((pos) => pos.value > 2 && pos !== undefined).sort((a, b) => a.value - b.value);
+        this.spearPositionArr = this.spearPositionArr.sort((a, b) => a.value - b.value);
+        this.fuguPositionArr = this.fuguPositionArr.sort((a, b) => a.value - b.value);
     }
 
     private isObstacle(pos: Position) {
@@ -50,9 +66,8 @@ export class MapUtils {
         });
     }
 
-    private getValue(pos: Position): number {
+    private getValue(pos: Position, r: number): number {
         let val = 0
-        let r = 2
 
         this.map.paths.forEach((path: Path) => {
             path.tiles.forEach((obs: Position) => {
