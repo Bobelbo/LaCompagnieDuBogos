@@ -21,13 +21,13 @@ export class GameHelpers {
     }
 
     public getIsTileEmpty(y: number, x: number): boolean {
-        if(y > this.gameMessage.map.height || x > this.gameMessage.map.width) {
+        if (y > this.gameMessage.map.height || x > this.gameMessage.map.width) {
             return false
         }
         const tile = this.getTileAt(y, x)
-        if(!tile) {
+        if (!tile) {
             return true
         }
-        return !tile.path && !tile.towers.length
+        return !tile.paths && !tile.towers.length
     }
 }

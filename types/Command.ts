@@ -28,7 +28,7 @@ interface SendReinforcementAction extends ActionBase {
   team: Id
 }
 
-type CommandAction = BuildAction | SellAction | SendReinforcementAction
+export type CommandAction = BuildAction | SellAction | SendReinforcementAction
 
 export interface Command {
   actions: CommandAction[]

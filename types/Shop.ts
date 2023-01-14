@@ -13,6 +13,6 @@ export interface TowerToBuy {
 }
 
 export interface Shop {
-    towers: Record<EnemyType, TowerToBuy>;
-    reinforcements: Record<TowerType, ReinforcementToBuy>;
+    towers: Record<TowerType, TowerToBuy>;
+    reinforcements: Record<EnemyType, ReinforcementToBuy>;
 }

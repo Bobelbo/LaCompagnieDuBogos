@@ -1,22 +1,43 @@
-import { GameHelpers } from './helpers/GameHelpers';
-import { Command, SendReinforcementCommand } from './types/Command';
-import { EnemyType } from './types/Enemy';
+import { IValuedPositions, MapUtils } from './lib/map';
+import { BuildCommand, Command } from './types/Command';
+import { ReinforcementUtils } from './lib/reinforcement';
 import { GameTick } from './types/Game';
+import { TowerType } from './types/Tower';
 
 export class Bot {
+    private state: GameTick;
+    private positionArr: IValuedPositions[];
+    private lastRecordedRound: Number;
+
     constructor() {
         console.log('Initializing your super duper mega bot');
-        // This method should be use to initialize some variables you will need throughout the game.
     }
-    /*
-     * Here is where the magic happens, for now the moves are random. I bet you can do better ;)
-     */
+
+    // Main
     getActions(gameMessage: GameTick): Command[] {
-        const { enemyTeams } = new GameHelpers(gameMessage);
+        this.state = gameMessage;
+        if (gameMessage.round === 0) { this.gameSetup() }
 
+        return this.coreLoop();
+    }
+
+    gameSetup() {
+        this.positionArr = new MapUtils(this.state.map).getPositionArray();
+        console.log(this.positionArr)
+    }
+
+    coreLoop(): Command[] {
         let commands = [];
-        commands = [new SendReinforcementCommand(EnemyType.LVL1, enemyTeams[0])];
 
+        commands.push(this.getTowerCommand());
+        new ReinforcementUtils(this.state).getReinforcementAction().forEach((x) => commands.push(x))
+
+        console.log(commands)
         return commands;
     }
+
+    getTowerCommand() {
+        return new BuildCommand(TowerType.SPEAR_SHOOTER, this.positionArr.pop().position)
+    }
 }
+
