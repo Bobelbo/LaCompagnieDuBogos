@@ -20,12 +20,14 @@ class ValuedPositions implements IValuedPositions {
 
 export class MapUtils {
     private map: GameMap;
+    private paths: Path[];
     public spearPositionArr: IValuedPositions[];
     public bombPositionArr: IValuedPositions[];
     public fuguPositionArr: IValuedPositions[];
 
     constructor(map: GameMap) {
         this.map = map;
+        this.paths = map.paths;
         const x = this.setupArrays()
         const y = this.fuguPositionArr;
 
@@ -56,10 +58,37 @@ export class MapUtils {
             }
         }
 
+        const boi = (value, index, self) => {
+            return self.indexOf(value) === index;
+          }
+
         // Filter bad decisions
-        this.fuguPositionArr = this.fuguPositionArr.sort((a, b) => a.id.length - b.id.length || a.value - b.value);
-        return placeholder.sort((a, b) => a.id.length - b.id.length || a.value - b.value);
+        this.fuguPositionArr = this.mergeofdoom(this.fuguPositionArr.sort((a, b) => a.value - b.value)).filter(boi);
+        return this.mergeofdoom(placeholder.sort((a, b) => a.value - b.value)).filter(boi);
     }
+
+    private mergeofdoom(arr: ValuedPositions[]) {
+        const fuckmehardchickensandwich = []
+
+        this.paths.forEach((path) => {
+            fuckmehardchickensandwich.push(
+                arr.filter((x: ValuedPositions) => x.id.includes(path.id))
+            )
+        })
+
+        return this.mergeAlernatively(fuckmehardchickensandwich)
+    }
+
+    private mergeAlernatively(arrList: [][]) {
+        const res = [];
+        let max = 0;
+        arrList.forEach((x)=>max+=x.length)
+        for(let i = 0; i < max; i++){
+            res.push(arrList[i % arrList.length].pop());
+           }
+        
+        return res;
+     }
 
     private isObstacle(pos: Position) {
         return this.map.obstacles.some((obs: Position) => {
