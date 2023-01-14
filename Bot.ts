@@ -61,17 +61,33 @@ export class Bot {
 
     getTowerCommand() {
         const cmd = [];
-        if (this.mapUtils.spearPositionArr.length > 0) {
-            cmd.push(new BuildCommand(TowerType.SPEAR_SHOOTER, this.mapUtils.spearPositionArr.pop().position))
-            this.money -= this.towers.SPEAR_SHOOTER.price;
-        } else if (this.mapUtils.fuguPositionArr.length > 0 && this.money >= this.towers.SPIKE_SHOOTER.price) {
-            cmd.push(new BuildCommand(TowerType.SPIKE_SHOOTER, this.mapUtils.fuguPositionArr.pop().position))
-            this.money -= this.towers.SPIKE_SHOOTER.price;
-        } else if (this.mapUtils.bombPositionArr.length > 0 && this.money >= this.towers.BOMB_SHOOTER.price) {
-            const pos = this.mapUtils.bombPositionArr.pop().position;
-            cmd.push(new SellCommand(pos));
-            cmd.push(new BuildCommand(TowerType.BOMB_SHOOTER, pos));
-            this.money -= this.towers.BOMB_SHOOTER.price;
+
+        let moneySpending = 0;
+
+        if (this.state.round <= 3){
+            moneySpending = 0;
+        }
+        else if (this.state.round <= 7) {
+            moneySpending = 400;
+        }
+        else {
+            moneySpending = 1500;
+        }
+
+        while (this.money > moneySpending){
+        
+            if (this.mapUtils.spearPositionArr.length > 0 && this.money >= this.towers.SPEAR_SHOOTER.price) {
+                cmd.push(new BuildCommand(TowerType.SPEAR_SHOOTER, this.mapUtils.spearPositionArr.pop().position))
+                this.money -= this.towers.SPEAR_SHOOTER.price;
+            } else if (this.mapUtils.fuguPositionArr.length > 0 && this.money >= this.towers.SPIKE_SHOOTER.price) {
+                cmd.push(new BuildCommand(TowerType.SPIKE_SHOOTER, this.mapUtils.fuguPositionArr.pop().position))
+                this.money -= this.towers.SPIKE_SHOOTER.price;
+            } else if (this.mapUtils.bombPositionArr.length > 0 && this.money >= this.towers.BOMB_SHOOTER.price) {
+                const pos = this.mapUtils.bombPositionArr.pop().position;
+                cmd.push(new SellCommand(pos));
+                cmd.push(new BuildCommand(TowerType.BOMB_SHOOTER, pos));
+                this.money -= this.towers.BOMB_SHOOTER.price;
+            }
         }
         return cmd;
     }

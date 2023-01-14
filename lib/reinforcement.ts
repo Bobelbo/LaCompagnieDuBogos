@@ -56,16 +56,20 @@ export class ReinforcementUtils {
         return roiArr.sort((a, b) => a.roi - b.roi);
     }
 
-    // private getMinHpEnemyTeamId(): string {
-    //     let minHp:string
-    //      for(let i=0;i<3;i++){
-    //         let theTeamId:Id = new GameHelpers(this.state).enemyTeams[i]
-    //         if(i==0){minHp=theTeamId}
-    //         if(this.state.teamInfos[theTeamId].isAlive){
-    //               if() 
-    //         }
-    //     }
-    // }
+    private getMinHpEnemyTeamId(): string {
+        let minHp:string
+        let theTeamId:Id
+         for(let i=0;i<3;i++){
+            theTeamId= new GameHelpers(this.state).enemyTeams[i]
+            if(i==0){minHp=theTeamId}
+            if(this.state.teamInfos[theTeamId].isAlive){
+                  if(this.state.teamInfos[theTeamId].hp<this.state.teamInfos[minHp].hp){
+                    minHp=theTeamId
+                  } 
+            }
+        }
+        return minHp;
+    }
 }
 
 // let enemies: EnemyType[] = this.getBestReinforcement()

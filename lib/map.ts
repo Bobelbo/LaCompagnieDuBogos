@@ -3,17 +3,18 @@ import { GameMap, Path } from "../types/GameMap";
 export interface IValuedPositions {
     position: Position;
     value: number;
+    id: string
 }
 
 class ValuedPositions implements IValuedPositions {
     public position: Position;
     public value: number;
-    public data: any;
+    public id: string;
 
-    constructor(pos: Position, val: number, data?: any) {
+    constructor(pos: Position, val: number, id?: string) {
         this.position = pos;
         this.value = val;
-        this.data = data;
+        this.id = id;
     }
 }
 
@@ -26,7 +27,7 @@ export class MapUtils {
     constructor(map: GameMap) {
         this.map = map;
         this.setupArrays()
-        this.bombPositionArr = [...this.spearPositionArr]
+        this.bombPositionArr = [...this.fuguPositionArr].concat([...this.spearPositionArr])
     }
 
     private setupArrays(): void {
@@ -40,11 +41,11 @@ export class MapUtils {
                 if (!this.isObstacle(pos)) {
                     const fuguValue = this.getValue(pos, 1);
                     if (fuguValue > 3) {
-                        this.fuguPositionArr.push(new ValuedPositions(pos, fuguValue, this.isObstacle(pos)));
+                        this.fuguPositionArr.push(new ValuedPositions(pos, fuguValue));
                     } else {
                         const spearValue = this.getValue(pos, 2);
                         if (spearValue > 2) {
-                            this.spearPositionArr.push(new ValuedPositions(pos, spearValue, this.isObstacle(pos)));
+                            this.spearPositionArr.push(new ValuedPositions(pos, spearValue));
                         }
                     }
                 }
