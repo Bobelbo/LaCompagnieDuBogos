@@ -27,18 +27,15 @@ export class MapUtils {
         // Create array
         for (let x: number = 0; x < this.map.width; x++) {
             for (let y: number = 0; y < this.map.height; y++) {
-                let pos = { x: x, y: y }
+                let pos = { x: x, y: y };
                 if (!this.isObstacle(pos)) {
-                    posArr.push(new ValuedPositions(pos, this.getValue(pos)))
+                    posArr.push(new ValuedPositions(pos, this.getValue(pos)));
                 }
             }
         }
 
         // Filter bad decisions
-        posArr.filter((pos) => pos.value > 0);
-        posArr = posArr.sort((a, b) => a.value - b.value);
-
-        return posArr;
+        return posArr.filter((pos) => pos.value > 2 || pos === undefined).sort((a, b) => a.value - b.value);
     }
 
     private isObstacle(pos: Position) {

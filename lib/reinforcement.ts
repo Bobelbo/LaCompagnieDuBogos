@@ -27,25 +27,24 @@ export class ReinforcementUtils {
         const { enemyTeams } = gameHelper;
         this.actions = [];
 
-        for (let i = this.state.teamInfos[this.state.teamId].money; i <= 15; i - 15) {
+        if (this.state.teamInfos[this.state.teamId].money > 15)
             this.actions.push(new SendReinforcementCommand(EnemyType.LVL2, enemyTeams[0]));
-        }
 
         return this.actions;
     }
-
-    private getBestReinforcement(): EnemyType[] {
-        let roiArr: ReinforcementRoi[] = [];
-
-        Object.keys(this.state.shop.reinforcements).forEach(
-            (type: string) => {
-                roiArr.push(new ReinforcementRoi(
-                    type as EnemyType,
-                    this.state.shop.reinforcements[type].payoutBonus /
-                    this.state.shop.reinforcements[type].price))
-            }
-        )
-
-        return roiArr.sort((a, b) => a.roi - b.roi).map((x) => x.type);
-    }
+    /*
+        private getBestReinforcement(): EnemyType[] {
+            let roiArr: ReinforcementRoi[] = [];
+    
+            Object.keys(this.state.shop.reinforcements).forEach(
+                (type: string) => {
+                    roiArr.push(new ReinforcementRoi(
+                        type as EnemyType,
+                        this.state.shop.reinforcements[type].payoutBonus /
+                        this.state.shop.reinforcements[type].price))
+                }
+            )
+    
+            return roiArr.sort((a, b) => a.roi - b.roi).map((x) => x.type);
+        }*/
 }

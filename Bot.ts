@@ -23,7 +23,16 @@ export class Bot {
 
     gameSetup() {
         this.positionArr = new MapUtils(this.state.map).getPositionArray();
-        console.log(this.positionArr)
+        console.log(this.printArr(this.positionArr))
+    }
+
+    printArr(arr) {
+        let str = "";
+        for (let item of arr) {
+            if (Array.isArray(item)) str += this.printArr(item);
+            else str += item + ", ";
+        }
+        return str;
     }
 
     coreLoop(): Command[] {
@@ -37,7 +46,9 @@ export class Bot {
     }
 
     getTowerCommand() {
-        return new BuildCommand(TowerType.SPEAR_SHOOTER, this.positionArr.pop().position)
+        let pos = this.positionArr.pop()
+        console.log(pos)
+        return new BuildCommand(TowerType.SPEAR_SHOOTER, pos.position)
     }
 }
 
