@@ -1,7 +1,7 @@
-import { GameHelpers } from "../helpers/GameHelpers";
 import { GameTick } from "../types/Game";
 import { SendReinforcementCommand, CommandAction } from "../types/Command";
 import { EnemyType } from "../types/Enemy";
+import { GameHelpers } from "../helpers/GameHelpers";
 
 class ReinforcementRoi {
     public type: EnemyType
@@ -57,13 +57,18 @@ export class ReinforcementUtils {
         return roiArr.sort((a, b) => a.roi - b.roi);
     }
     private getMinHpEnemyTeamId(): string {
+
+        const gameHelper = new GameHelpers(this.state);
+        const { enemyTeams } = gameHelper;
+
         let minHp:string=null;
-        Object.keys(this.state.teamInfos).forEach(
-            (id:string) => {
+
+        enemyTeams.forEach(
+            (id) => {
                 const teamInfo=this.state.teamInfos[id];
-                if (minHp==null) {
+                if(minHp == null)
                     minHp = id;
-                } else if(teamInfo.isAlive && teamInfo.hp<this.state.teamInfos[minHp].hp) {
+                if(teamInfo.isAlive && teamInfo.hp < this.state.teamInfos[minHp].hp) {
                     minHp=teamInfo.id;
                 } 
             }

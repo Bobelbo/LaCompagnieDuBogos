@@ -38,8 +38,6 @@ export class Bot {
         const commands = [];
 
         this.money = this.state.teamInfos[this.state.teamId].money;
-
-        this.getReinforcementCommand().forEach((x) => commands.push(x))
         this.getPayoutActions().forEach((x) => commands.push(x))
 
         console.log(commands)
@@ -49,7 +47,7 @@ export class Bot {
     getPayoutActions() {
         const cmd = [];
         console.log(this.state.ticksUntilPayout);
-        if (this.state.ticksUntilPayout !== 59) return cmd;
+        if (this.state.ticksUntilPayout !== 60) return this.getReinforcementCommand();
 
         this.getTowerCommand().forEach((x) => cmd.push(x))
 
@@ -64,11 +62,12 @@ export class Bot {
         const cmd = [];
         let maxTurretPlacement = 2;
 
-        if (this.state.round <= 7) {
-            maxTurretPlacement = 5;
-        }
-        else {
+        if (this.state.round >= 4) {
+            maxTurretPlacement = 3;
+        }else if (this.state.round >= 12) {
             maxTurretPlacement = 10;
+        } else {
+            maxTurretPlacement = 15;
         }
 
         for (let i = 0; i < maxTurretPlacement; i++){
@@ -81,8 +80,6 @@ export class Bot {
                 cmd.push(this.addFugu())
             } else if (this.mapUtils.bombPositionArr.length > 0 && this.money >= this.towers.BOMB_SHOOTER.price) {
                 this.sellAddBomb().forEach((x) => cmd.push(x))
-            } else {
-                return cmd;
             }
         }
         return cmd;

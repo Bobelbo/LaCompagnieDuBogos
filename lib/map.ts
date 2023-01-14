@@ -26,12 +26,13 @@ export class MapUtils {
 
     constructor(map: GameMap) {
         this.map = map;
-        this.setupArrays()
-        this.bombPositionArr = [...this.fuguPositionArr].concat([...this.spearPositionArr])
+        const x = this.setupArrays()
+        this.spearPositionArr = x.splice(x.length-10);
+        this.bombPositionArr = [...this.fuguPositionArr].concat([...this.spearPositionArr]).concat([...x]);
     }
 
-    private setupArrays(): void {
-        this.spearPositionArr = []
+    private setupArrays(): ValuedPositions[] {
+        const placeholder = []
         this.fuguPositionArr = []
 
         // Create array
@@ -45,7 +46,7 @@ export class MapUtils {
                     } else {
                         const spearValue = this.getValue(pos, 2);
                         if (spearValue > 2) {
-                            this.spearPositionArr.push(new ValuedPositions(pos, spearValue));
+                            placeholder.push(new ValuedPositions(pos, spearValue));
                         }
                     }
                 }
@@ -53,8 +54,8 @@ export class MapUtils {
         }
 
         // Filter bad decisions
-        this.spearPositionArr = this.spearPositionArr.sort((a, b) => a.value - b.value);
         this.fuguPositionArr = this.fuguPositionArr.sort((a, b) => a.value - b.value);
+        return placeholder.sort((a, b) => a.value - b.value);
     }
 
     private isObstacle(pos: Position) {
