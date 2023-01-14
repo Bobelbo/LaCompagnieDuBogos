@@ -9,14 +9,10 @@ export class Bot {
     private state: GameTick;
     private mapUtils: MapUtils;
     private towers: Record<TowerType, TowerToBuy>;
-    private nbSpear:number;
-    private nbFugu:number;
     private money: number;
 
     constructor() {
         console.log('Initializing your super duper mega bot');
-        this.nbFugu = 0;
-        this.nbSpear = 0;
     }
 
     // Main
@@ -60,39 +56,27 @@ export class Bot {
 
     getTowerCommand() {
         const cmd = [];
-        let maxTurretPlacement = 2;
 
-        if (this.state.round >= 4) {
-            maxTurretPlacement = 3;
-        }else if (this.state.round >= 12) {
-            maxTurretPlacement = 10;
-        } else {
-            maxTurretPlacement = 15;
-        }
-
-        for (let i = 0; i < maxTurretPlacement; i++){
+        // eslint-disable-next-line no-constant-condition
+        while (true){
             if (this.mapUtils.spearPositionArr.length > 0 && this.money >= this.towers.SPEAR_SHOOTER.price) {
-                if (this.nbSpear + 1 > this.nbFugu + 1 * 2 && this.mapUtils.fuguPositionArr.length > 0 && this.money >= this.towers.SPIKE_SHOOTER.price) {
-                    cmd.push(this.addFugu())
-                }
                 cmd.push(this.addSpear())
             } else if (this.mapUtils.fuguPositionArr.length > 0 && this.money >= this.towers.SPIKE_SHOOTER.price) {
                 cmd.push(this.addFugu())
             } else if (this.mapUtils.bombPositionArr.length > 0 && this.money >= this.towers.BOMB_SHOOTER.price) {
                 this.sellAddBomb().forEach((x) => cmd.push(x))
+            } else {
+                return cmd;
             }
         }
-        return cmd;
     }
 
     addSpear() {
-        this.nbSpear++;
         this.money -= this.towers.SPEAR_SHOOTER.price;
         return new BuildCommand(TowerType.SPEAR_SHOOTER, this.mapUtils.spearPositionArr.pop().position)
     }
 
     addFugu() {
-        this.nbFugu++;
         this.money -= this.towers.SPIKE_SHOOTER.price;
         return new BuildCommand(TowerType.SPIKE_SHOOTER, this.mapUtils.fuguPositionArr.pop().position)
     }

@@ -27,8 +27,11 @@ export class MapUtils {
     constructor(map: GameMap) {
         this.map = map;
         const x = this.setupArrays()
+        const y = this.fuguPositionArr;
+
         this.spearPositionArr = x.splice(x.length-10);
-        this.bombPositionArr = [...this.fuguPositionArr].concat([...this.spearPositionArr]).concat([...x]);
+        this.fuguPositionArr = y.splice(y.length-10);
+        this.bombPositionArr = [...this.fuguPositionArr].concat([...y]).concat([...this.spearPositionArr]).concat([...x]);
     }
 
     private setupArrays(): ValuedPositions[] {
