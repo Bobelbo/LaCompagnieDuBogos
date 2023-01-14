@@ -60,7 +60,7 @@ export class ReinforcementUtils {
     //     let minHp:string
     //      for(let i=0;i<3;i++){
     //         let theTeamId:Id = new GameHelpers(this.state).enemyTeams[i]
-    //           if(i==0){minHp=theTeamId}
+    //         if(i==0){minHp=theTeamId}
     //         if(this.state.teamInfos[theTeamId].isAlive){
     //               if() 
     //         }
