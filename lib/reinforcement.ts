@@ -28,7 +28,7 @@ export class ReinforcementUtils {
         const enemies: ReinforcementRoi[] = this.getBestReinforcement()
         this.actions = [];
 
-        enemies.forEach((e: ReinforcementRoi) => {
+        enemies.reverse().forEach((e: ReinforcementRoi) => {
             let reinforcements: number = this.state.teamInfos[this.state.teamId].sentReinforcements.length
             while (money-e.price >= 0 && reinforcements < 8) {
                 money -= e.price;
