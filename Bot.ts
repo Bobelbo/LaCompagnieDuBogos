@@ -9,11 +9,14 @@ export class Bot {
     private state: GameTick;
     private mapUtils: MapUtils;
     private towers: Record<TowerType, TowerToBuy>;
-    private round: number;
+    private nbSpear:number;
+    private nbFugu:number;
     private money: number;
 
     constructor() {
         console.log('Initializing your super duper mega bot');
+        this.nbFugu = 0;
+        this.nbSpear = 0;
     }
 
     // Main
@@ -21,7 +24,6 @@ export class Bot {
         this.state = gameMessage;
         if (gameMessage.round === 0) {
             this.gameSetup();
-            this.round = -1;
         }
 
         return this.coreLoop();
@@ -39,7 +41,6 @@ export class Bot {
 
         this.getReinforcementCommand().forEach((x) => commands.push(x))
         this.getPayoutActions().forEach((x) => commands.push(x))
-        this.round = this.state.round;
 
         console.log(commands)
         return commands;
@@ -61,30 +62,50 @@ export class Bot {
 
     getTowerCommand() {
         const cmd = [];
-        let moneySpending = 250;
+        let maxTurretPlacement = 2;
 
         if (this.state.round <= 7) {
-            moneySpending = 400;
+            maxTurretPlacement = 5;
         }
         else {
-            moneySpending = 1500;
+            maxTurretPlacement = 10;
         }
 
-        while (this.money > moneySpending){
-        
+        for (let i = 0; i < maxTurretPlacement; i++){
             if (this.mapUtils.spearPositionArr.length > 0 && this.money >= this.towers.SPEAR_SHOOTER.price) {
-                cmd.push(new BuildCommand(TowerType.SPEAR_SHOOTER, this.mapUtils.spearPositionArr.pop().position))
-                this.money -= this.towers.SPEAR_SHOOTER.price;
+                if (this.nbSpear + 1 > this.nbFugu + 1 * 2 && this.mapUtils.fuguPositionArr.length > 0 && this.money >= this.towers.SPIKE_SHOOTER.price) {
+                    cmd.push(this.addFugu())
+                }
+                cmd.push(this.addSpear())
             } else if (this.mapUtils.fuguPositionArr.length > 0 && this.money >= this.towers.SPIKE_SHOOTER.price) {
-                cmd.push(new BuildCommand(TowerType.SPIKE_SHOOTER, this.mapUtils.fuguPositionArr.pop().position))
-                this.money -= this.towers.SPIKE_SHOOTER.price;
+                cmd.push(this.addFugu())
             } else if (this.mapUtils.bombPositionArr.length > 0 && this.money >= this.towers.BOMB_SHOOTER.price) {
-                const pos = this.mapUtils.bombPositionArr.pop().position;
-                cmd.push(new SellCommand(pos));
-                cmd.push(new BuildCommand(TowerType.BOMB_SHOOTER, pos));
-                this.money -= this.towers.BOMB_SHOOTER.price;
+                this.sellAddBomb().forEach((x) => cmd.push(x))
+            } else {
+                return cmd;
             }
         }
+        return cmd;
+    }
+
+    addSpear() {
+        this.nbSpear++;
+        this.money -= this.towers.SPEAR_SHOOTER.price;
+        return new BuildCommand(TowerType.SPEAR_SHOOTER, this.mapUtils.spearPositionArr.pop().position)
+    }
+
+    addFugu() {
+        this.nbFugu++;
+        this.money -= this.towers.SPIKE_SHOOTER.price;
+        return new BuildCommand(TowerType.SPIKE_SHOOTER, this.mapUtils.fuguPositionArr.pop().position)
+    }
+
+    sellAddBomb() {
+        const cmd = [];
+        const pos = this.mapUtils.bombPositionArr.pop().position;
+        this.money -= this.towers.BOMB_SHOOTER.price;
+        cmd.push(new SellCommand(pos));
+        cmd.push(new BuildCommand(TowerType.BOMB_SHOOTER, pos));
         return cmd;
     }
 }
