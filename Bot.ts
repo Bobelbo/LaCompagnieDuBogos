@@ -65,7 +65,7 @@ export class Bot {
         let moneySpending = 0;
 
         if (this.state.round <= 3){
-            moneySpending = 0;
+            moneySpending = 250;
         }
         else if (this.state.round <= 7) {
             moneySpending = 400;

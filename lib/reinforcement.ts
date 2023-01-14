@@ -30,7 +30,7 @@ export class ReinforcementUtils {
         const { enemyTeams } = gameHelper;
         this.actions = [];
 
-        enemies.reverse().forEach((e: ReinforcementRoi) => {
+        enemies.forEach((e: ReinforcementRoi) => {
             while (money-e.price >= 0) {
                 this.actions.push(new SendReinforcementCommand(e.type, enemyTeams[0]));
             }
