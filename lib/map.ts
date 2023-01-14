@@ -8,7 +8,9 @@ export interface IValuedPositions {
 class ValuedPositions implements IValuedPositions {
     public position: Position;
     public value: number;
-    constructor(pos: Position, val: number) {
+    public data: any;
+
+    constructor(pos: Position, val: number, data?: any) {
         this.position = pos;
         this.value = val;
     }
@@ -29,7 +31,7 @@ export class MapUtils {
             for (let y: number = 0; y < this.map.height; y++) {
                 let pos = { x: x, y: y };
                 if (!this.isObstacle(pos)) {
-                    posArr.push(new ValuedPositions(pos, this.getValue(pos)));
+                    posArr.push(new ValuedPositions(pos, this.getValue(pos), this.isObstacle(pos)));
                 }
             }
         }
