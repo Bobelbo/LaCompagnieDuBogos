@@ -62,12 +62,9 @@ export class Bot {
 
     getTowerCommand() {
         const cmd = [];
-        let moneySpending = 0;
+        let moneySpending = 250;
 
-        if (this.state.round <= 3){
-            moneySpending = 0;
-        }
-        else if (this.state.round <= 7) {
+        if (this.state.round <= 7) {
             moneySpending = 400;
         }
         else {
