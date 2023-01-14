@@ -47,7 +47,7 @@ export class Bot {
     getPayoutActions() {
         const cmd = [];
         console.log(this.state.ticksUntilPayout);
-        if (this.state.ticksUntilPayout !== 60) return this.getReinforcementCommand();
+        if (this.state.ticksUntilPayout !== 59) return this.getReinforcementCommand();
 
         this.getTowerCommand().forEach((x) => cmd.push(x))
 
