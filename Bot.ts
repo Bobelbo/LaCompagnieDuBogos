@@ -34,8 +34,6 @@ export class Bot {
         this.money = this.state.teamInfos[this.state.teamId].money;
 
         this.getRoundActions().forEach((x) => commands.push(x))
-        this.getReinforcementCommand().forEach((x) => commands.push(x))
-
         this.round = this.state.round;
 
         console.log(commands)
@@ -43,9 +41,13 @@ export class Bot {
     }
 
     getRoundActions() {
+        let cmd = [];
         if (this.round >= this.state.round) return [];
 
-        return this.getTowerCommand();
+        this.getTowerCommand().forEach((x) => cmd.push(x))
+        this.getReinforcementCommand().forEach((x) => cmd.push(x))
+
+        return cmd
     }
 
     getReinforcementCommand() {
