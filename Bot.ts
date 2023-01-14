@@ -7,7 +7,6 @@ import { TowerType } from './types/Tower';
 export class Bot {
     private state: GameTick;
     private positionArr: IValuedPositions[];
-    private lastRecordedRound: Number;
 
     constructor() {
         console.log('Initializing your super duper mega bot');

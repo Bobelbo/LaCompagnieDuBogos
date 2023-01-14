@@ -35,7 +35,7 @@ export class MapUtils {
         }
 
         // Filter bad decisions
-        return posArr.filter((pos) => pos.value > 2 || pos === undefined).sort((a, b) => a.value - b.value);
+        return posArr.filter((pos) => pos.value > 2 && pos !== undefined).sort((a, b) => a.value - b.value);
     }
 
     private isObstacle(pos: Position) {
