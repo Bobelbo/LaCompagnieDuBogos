@@ -37,6 +37,7 @@ export class Bot {
 
         this.money = this.state.teamInfos[this.state.teamId].money;
 
+        this.getReinforcementCommand().forEach((x) => commands.push(x))
         this.getPayoutActions().forEach((x) => commands.push(x))
         this.round = this.state.round;
 
@@ -50,14 +51,12 @@ export class Bot {
         if (this.state.ticksUntilPayout !== 59) return cmd;
 
         this.getTowerCommand().forEach((x) => cmd.push(x))
-        this.getReinforcementCommand().forEach((x) => cmd.push(x))
 
         return cmd;
     }
 
     getReinforcementCommand() {
-        const cmd = new ReinforcementUtils(this.state).getReinforcementAction(this.money);
-        return cmd;
+        return new ReinforcementUtils(this.state).getReinforcementAction(this.money);
     }
 
     getTowerCommand() {
