@@ -18,9 +18,6 @@ export class Bot {
     // Main
     getActions(gameMessage: GameTick): Command[] {
         this.state = gameMessage;
-        if (gameMessage.round === 0) {
-            this.gameSetup();
-        }
 
         return this.coreLoop();
     }
@@ -42,6 +39,11 @@ export class Bot {
 
     getPayoutActions() {
         const cmd = [];
+        if (this.state.round === 0) {
+            this.gameSetup();
+            return this.getReinforcementCommand();
+        }
+
         console.log(this.state.ticksUntilPayout);
         if (this.state.ticksUntilPayout !== 59) return this.getReinforcementCommand();
 

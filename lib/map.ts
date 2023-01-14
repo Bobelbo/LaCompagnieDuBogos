@@ -3,15 +3,15 @@ import { GameMap, Path } from "../types/GameMap";
 export interface IValuedPositions {
     position: Position;
     value: number;
-    id: string
+    id: string[]
 }
 
 class ValuedPositions implements IValuedPositions {
     public position: Position;
     public value: number;
-    public id: string;
+    public id: string[];
 
-    constructor(pos: Position, val: number, id?: string) {
+    constructor(pos: Position, val: number, id?: string[]) {
         this.position = pos;
         this.value = val;
         this.id = id;
@@ -44,12 +44,12 @@ export class MapUtils {
                 const pos = { x: x, y: y };
                 if (!this.isObstacle(pos)) {
                     const fuguValue = this.getValue(pos, 1);
-                    if (fuguValue > 3) {
-                        this.fuguPositionArr.push(new ValuedPositions(pos, fuguValue));
+                    if (fuguValue.val > 3) {
+                        this.fuguPositionArr.push(new ValuedPositions(pos, fuguValue.val, fuguValue.ids));
                     } else {
                         const spearValue = this.getValue(pos, 2);
-                        if (spearValue > 2) {
-                            placeholder.push(new ValuedPositions(pos, spearValue));
+                        if (spearValue.val > 2) {
+                            placeholder.push(new ValuedPositions(pos, spearValue.val, spearValue.ids));
                         }
                     }
                 }
@@ -57,8 +57,8 @@ export class MapUtils {
         }
 
         // Filter bad decisions
-        this.fuguPositionArr = this.fuguPositionArr.sort((a, b) => a.value - b.value);
-        return placeholder.sort((a, b) => a.value - b.value);
+        this.fuguPositionArr = this.fuguPositionArr.sort((a, b) => a.id.length - b.id.length || a.value - b.value);
+        return placeholder.sort((a, b) => a.id.length - b.id.length || a.value - b.value);
     }
 
     private isObstacle(pos: Position) {
@@ -71,15 +71,21 @@ export class MapUtils {
         });
     }
 
-    private getValue(pos: Position, r: number): number {
+    private getValue(pos: Position, r: number): {val:number, ids:string[]} {
         let val = 0
+        const ids = []
 
         this.map.paths.forEach((path: Path) => {
             path.tiles.forEach((obs: Position) => {
-                if (Math.abs(obs.x - pos.x) <= r && Math.abs(obs.y - pos.y) <= r) val++;
+                if (Math.abs(obs.x - pos.x) <= r && Math.abs(obs.y - pos.y) <= r) {
+                    val++;
+                    if (!ids.includes(path.id)) {
+                        ids.push(path.id)
+                    }
+                }
             });
         });
 
-        return val;
+        return {val:val, ids:ids};
     }
 }
